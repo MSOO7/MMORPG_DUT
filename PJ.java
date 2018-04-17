@@ -111,25 +111,22 @@ public class PJ {
         return this.caracteristique[7];
     }
 
-
-    public void setDegats(int value) {
+ public void setDegats(int value) {
 
         this.caracteristique[7] = value;
     }
-
-
-    public void setDegresUtilises(int value) {
+ public void setDegresUtilises(int value) {
 
         this.degresUtilises = value;
     }
 
 
-    public int getDegresUtilises() {
+public int getDegresUtilises() {
 
         return this.degresUtilises;
     }
 
-    public void init() {
+public void init() {
     	Scanner sc = new Scanner(System.in);
     	int tempo;
     	if (PJ.DEFAULT_NB_DEGRES-this.degresUtilises>0) {
