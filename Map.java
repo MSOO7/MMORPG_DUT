@@ -54,7 +54,7 @@ public class Map {
 		}
 	}
 
-	
+
 
 	public void random_placement(char entite){
 		int x,y, placement_fait = 0;
@@ -110,8 +110,8 @@ public class Map {
 		System.out.println("Coordonnes invalide (qui)");
 		return 0;
 	}
-	
-	
+
+
 
 	public String toString(){
 		String retour="";
@@ -152,8 +152,8 @@ public class Map {
 				e.printStackTrace();
 			}
 		}
-		
-		
+
+
 	}
 	public boolean load(String nom) {
 		DataInputStream dis = null;
@@ -188,8 +188,8 @@ public class Map {
 				e.printStackTrace();
 			}
 		}
-		
-		
+
+
 	}
 
 	  //////////////////////////////////
