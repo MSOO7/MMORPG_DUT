@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Random;
 
 /*Creer objet entite avec Coordonnes etc */
 
@@ -15,8 +16,6 @@ public class Map {
 	private char[][] map ;
 	private char[] car_perso = { 'O', 'M'}; // incomplet  O= objet  M=monstre
 	//penser a remplacer les strings par des objets avec des caracteristiques
-	private int nb_MonstresEtObj = 3;
-
 
 
 	public Map(int taille) {
@@ -58,10 +57,13 @@ public class Map {
 
 	public void random_placement(char entite){
 		int x,y, placement_fait = 0;
+		Random r = new Random();
 
 		while(placement_fait != 1){
-			x =(int) Math.random()* this.taille_map;
-			y =(int) Math.random()* this.taille_map;
+			x = r.nextInt(this.taille_map);
+			y = r.nextInt(this.taille_map);
+
+			System.out.print(""+x+" "+y);
 
 			placement_fait = this.place(entite, x, y);
 		}
@@ -69,11 +71,16 @@ public class Map {
 
 	}
 	public char random_entite(){
-		int indice = (int)Math.random()* this.car_perso.length; // chiffre random [0,car_perso.length[
+		Random r = new Random();
+		int indice =r.nextInt(this.car_perso.length); // chiffre random [0,car_perso.length[
 		return this.car_perso[indice];
 	}
 
-
+	public void init_monstre_objet(int n){
+		for(int i = 0; i < n; i++){
+			this.random_placement(this.random_entite());
+		}
+	}
 
 
 

@@ -17,6 +17,7 @@ public class PJ {
     private String[] carac= {"Force","Adresse","Resistance","Initiative","Attaque","Esquive","Defense","Degats"};
     public static final int DEFAULT_NB_DEGRES = 18;
     private int degresUtilises;
+    private String name_PJ;
 
     public PJ() {
         for (int i =0; i<3; i++) {
@@ -25,6 +26,10 @@ public class PJ {
         this.degresUtilises = 0;
         this.init();
     }
+
+  public String getName(){
+    return this.name_PJ;
+  }
 
 
  public int getForce() {
@@ -129,6 +134,10 @@ public int getDegresUtilises() {
 public void init() {
     	Scanner sc = new Scanner(System.in);
     	int tempo;
+
+      System.out.println("Quel est le nom du personnage que vous souhaitez creer? ");
+      this.name_PJ = sc.nextLine();
+
     	if (PJ.DEFAULT_NB_DEGRES-this.degresUtilises>0) {
 	    	System.out.println("Force ? (degres restants : "+(PJ.DEFAULT_NB_DEGRES-this.degresUtilises) + ") : ");
 	    	tempo = sc.nextInt();

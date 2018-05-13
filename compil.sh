@@ -4,6 +4,6 @@ mkdir class
 javac *.java
 mv *.class class/
 cd class
-java Main
+java $1
 cd ..
 rm -r class
