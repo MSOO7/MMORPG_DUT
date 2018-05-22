@@ -8,7 +8,7 @@ public class Personnage extends Entite{
 	private int PV;
 	private int XP;
 	private int inventaire[];
-	
+
 	public Personnage(){
 		super();
 		int tab[]= {10,10};
@@ -34,6 +34,15 @@ public class Personnage extends Entite{
 		this.PV = pV;
 		this.XP = xP;
 		this.inventaire = inventaire;
+	}
+
+	// public save(String chemin){
+	//
+	// }
+
+	public void deplacement(int x, int y){
+		this.setX(x);
+		this.setY(y);
 	}
 
 	public int getInitiative() {

@@ -1,27 +1,52 @@
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
+import java.io.*;
+import java.util.*;
 
 
 public class Map {
 	private boolean[][] map ;
 	private ArrayList<Entite> entites;
-	
+
 	public Map(int taille) {
 		this.map = new boolean[taille][taille];
 		this.entites = new ArrayList<Entite>();
 		this.generate();
-		
+
 	}
-	
+
+	public void moveHero(){
+		Scanner sc = new Scanner(System.in);
+		int choix , compteur = 0;
+		Hero j = (Hero) this.entites.get(0);
+		String[] deplacement_possible = new String[4];
+
+
+		if(!this.isNotGround(j.getX()-1, j.getY())) {
+			deplacement_possible[compteur] = "OUEST";
+			compteur ++;
+		}
+		if(!this.isNotGround(j.getX()+1, j.getY())) {
+			deplacement_possible[compteur] = "EST";
+			compteur ++;
+		}
+		if(!this.isNotGround(j.getX(), j.getY()-1)) {
+			deplacement_possible[compteur] = "NORD";
+			compteur ++;
+		}
+		if(!this.isNotGround(j.getX()-1, j.getY()+1)) {
+			deplacement_possible[compteur] = "SUD";
+			compteur ++;
+		}
+		do{
+			System.out.println("Où voulez vous allez ( "+ deplacement_possible.length +" choix possibles):");
+			for(int i = 0; i < compteur; i++){
+				System.out.println(i+": "+deplacement_possible[i]);
+			}
+			System.out.println("==> ");
+			choix = sc.nextInt();
+		}while(choix > compteur || choix < 0);
+		System.out.println(deplacement_possible[choix]);
+	}
+
 	public Entite last(){
 		return this.entites.get(this.entites.size()-1);
 	}
@@ -35,6 +60,17 @@ public class Map {
 		this.entites.add(e);
 	}
 
+	public void random_placement(Entite entite){
+		int x,y;
+		Random r = new Random();
+
+		do{
+			x = r.nextInt(this.getT());
+			y = r.nextInt(this.getT());
+		}while(this.isNotGround(x, y));
+		entite.setX(x);
+		entite.setY(y);
+	}
 	//////////////////////////////////
    //// fonction de construction ////
   //////////////////////////////////
@@ -66,11 +102,11 @@ public class Map {
 	}
 
 	public void generateItem(){
-		
+
 	}
-	
+
 	public void generateMonstre(){
-		
+
 	}
 
 	public String toString(){
@@ -104,7 +140,7 @@ public class Map {
 		return retour;
 	*/
 	}
-/*	
+/*
 	public boolean save(String nom) {
 		DataOutputStream dos = null;
 		try {
