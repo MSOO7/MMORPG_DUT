@@ -1,9 +1,3 @@
-/**
- *
- * @author Steven Le Moine
- * @version Beta (1.0)
- *
- */
 
 /*
  * A faire : rajouter dans le toString les nouvelles capacités (de initiative a degats)

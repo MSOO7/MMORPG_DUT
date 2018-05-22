@@ -23,20 +23,40 @@ public class Client{
 
     if(choix == 1){
       PJ p = new PJ();
+      System.out.println("\n\n");
       Client.play(p);
     }
   }
 
   public static void play(PJ p){
-    System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-
-    System.out.println(" Vous vous reveillez au milieu d'une foret adossé a un arbre, au loin resonne les gazouillements des oiseaux.\n   Vous decidez d'eteindre votre feu de camp et de preparer votre materiel pour une nouvelle journée dans le donjon de l'oncle Sam.\n Quelques foulées plus tard, vous arrivez devant l'entrée d'une grotte. Bizarre d'en trouver une en pleine foret, Surtout sans montagne autour.\n Un homme approche.....\n >>Hey "+p.getName()+" , Sa fait longtemps qu'on t'as pas vu, Ptiot.\n De retour a creil pour chasser du gobelins?\n ................. \n >>Dis donc j'avais oublié que la parlotte c'est pas ton fort, Ptiot. Toi c'est plus le Claquo. Allez jte laisse faire ton boulot le Ptiot.\n\n Vous avez reussi a faire fuire le fermier sauvage.\n Sans attendre vous courez et entré dans la grotte. Une odeur malefique s'echappe de celui-ci , Un mauvais presage..........  ");
-
+    System.out.println("Vous vous reveillez au milieu d'une foret adossé a un arbre, au loin resonne les gazouillements des oiseaux.");
+    System.out.println("Vous decidez d'eteindre votre feu de camp et de preparer votre materiel pour une nouvelle journée dans le donjon de l'oncle Sam.");
+    System.out.println("Quelques foulées plus tard, vous arrivez devant l'entrée d'une grotte. Bizarre d'en trouver une en pleine foret, Surtout sans montagne autour.");
+    System.out.println("Un homme approche.... ");
+    System.out.println(">>Hey "+p.getName()+" , Sa fait longtemps qu'on t'as pas vu, Ptiot.");
+    System.out.println("De retour a creil pour chasser du gobelins?");
+    System.out.println(".................");
+    System.out.println(">> J'avais oublié que la parlotte c'est pas trop ton truc Ptiot. Bon jte laisse faire ton boulot");
+    System.out.println("Vous avez reussi a faire fuire le fermier sauvage.");
+    System.out.println("Sans attendre vous courez et entré dans la grotte. Une odeur malefique s'echappe de celui-ci , Un mauvais presage.......... ");
+    System.out.println("\n\n");
     Map m = new Map(30);
-    m.load("dft");
-    m.init_monstre_objet(6);
+    m.load("../dft");
+    m.init_monstre_objet(30);
     m.place('1',5,0);
+    System.out.println("\n\n");
     System.out.println(m);
 
+  }
+
+  public static void clear(){
+    try{
+      Runtime r = Runtime.getRuntime();
+      Process proc = r.exec("clear"); // Pour windows changer clear par cls
+      proc.waitFor();
+    }catch(Exception e){
+      System.out.println("Erreur pour lancement de commande Clear");
+
+    }
   }
 }

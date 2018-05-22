@@ -7,21 +7,32 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
-/*Creer objet entite avec Coordonnes etc */
 
 public class Map {
-	private int taille_map ;
-	private char[][] map ;
-	private char[] car_perso = { 'O', 'M'}; // incomplet  O= objet  M=monstre
-	//penser a remplacer les strings par des objets avec des caracteristiques
-
-
+	private boolean[][] map ;
+	private ArrayList<Entite> entites;
+	
 	public Map(int taille) {
-		this.taille_map = taille;
-		this.map = new char[this.taille_map][this.taille_map]; //Map de taille 15*15
+		this.map = new boolean[taille][taille];
+		this.entites = new ArrayList<Entite>();
 		this.generate();
+		
+	}
+	
+	public Entite last(){
+		return this.entites.get(this.entites.size()-1);
+	}
+	public int getT(){
+		return this.map.length;
+	}
+	public boolean isNotGround(int x, int y){
+		return this.map[x][y];
+	}
+	public void add_E(Entite e){
+		this.entites.add(e);
 	}
 
 	//////////////////////////////////
@@ -29,108 +40,71 @@ public class Map {
   //////////////////////////////////
 
 	public void generate() {
-		for(int i=0; i < this.taille_map; i++){
-			for(int j=0; j < this.taille_map; j++){
-				this.map[i][j] = ' ';  //on initialise le tableau avec des espaces
+		for(int i=0; i < this.map.length; i++){
+			for(int j=0; j < this.map.length; j++){
+				this.map[i][j] = false;
 			}
 		}
 		this.contour();
 	}
 
 	public void contour() {
-		for(int i = 0; i < this.taille_map; i++) {
-			this.map[0][i] = '#'; // mur haut de la map
-			this.map[i][0] = this.map[i][this.taille_map -1] = '#'; // mur des cotes de la map
-			this.map[this.taille_map - 1][i] = '#';  // mur bas de la map
-			/**
-			 * D'apres ces lignes la map se presentera sous cette forme si la taille == 5:
-			 * 		# # # # #
-			 * 		#       #
-			 * 		#       #		(Sans les espaces)
-			 * 		#       #
-			 * 		# # # # #
-			 */
+		for(int i = 0; i < this.map.length; i++) {
+			this.map[0][i] = true;
+			this.map[i][0] = this.map[i][this.map.length -1] = true; // mur des cotes de la map
+			this.map[this.map.length - 1][i] = true;  // mur bas de la map
 		}
 	}
 
-
-
-	public void random_placement(char entite){
-		int x,y, placement_fait = 0;
+	//------------------------------------------------------------------------------------
+	public void random_entite(){
 		Random r = new Random();
-
-		while(placement_fait != 1){
-			x = r.nextInt(this.taille_map);
-			y = r.nextInt(this.taille_map);
-
-			System.out.print(""+x+" "+y);
-
-			placement_fait = this.place(entite, x, y);
-		}
-
-
-	}
-	public char random_entite(){
-		Random r = new Random();
-		int indice =r.nextInt(this.car_perso.length); // chiffre random [0,car_perso.length[
-		return this.car_perso[indice];
+		if (r.nextInt(1)==0)
+			this.generateItem();
+		else
+			this.generateMonstre();
 	}
 
-	public void init_monstre_objet(int n){
-		for(int i = 0; i < n; i++){
-			this.random_placement(this.random_entite());
-		}
+	public void generateItem(){
+		
 	}
-
-
-
-	//////////////////////////////////
-   //// fonction de manipulation ////
-  //////////////////////////////////
-
-	/**
-	*	Permet de deplacer le joueur
-	*	Retourne 1 si placement effectue
-	*   0 sinon
-	*/
-	public  int place(char entite, int x, int y){
-		if(estCase(x, y)){
-			if(qui(x,y) != ' '){
-				System.out.println("La case est deja occupe");
-				return 0;
-			}
-			this.map[x][y] = entite; // on place l'objet choisi a l'endroit voulu
-			return 1;
-		}else{
-			System.out.println("Coordonnes invalide (deplacement)");
-			return 0;
-		}
+	
+	public void generateMonstre(){
+		
 	}
-
-	/**
-	* Retourne la contenance d'une case
-	*/
-	public char qui(int x, int y){
-		if(estCase(x,y)){
-			return this.map[x][y];
-		}
-		System.out.println("Coordonnes invalide (qui)");
-		return 0;
-	}
-
-
 
 	public String toString(){
 		String retour="";
-		for(int i=0; i<this.taille_map; i++){
-			for(int j=0; j<this.taille_map; j++){
-				retour += qui(i,j);
+		boolean trouve;
+		for(int i=0; i<this.map.length; i++){
+			for(int j=0; j<this.map.length; j++){
+				if (map[i][j])
+					retour+="#";
+				else{
+					trouve = false;
+					for (int e=0;e<entites.size();e++){
+						if (this.entites.get(e).getX()==i && this.entites.get(e).getY()==j){
+							retour+=this.entites.get(e).toString();
+							trouve = true;
+							break;
+						}
+					}
+				if(!trouve)
+					retour+=" ";
+				}
 			}
 			retour += "\n";
 		}
 		return retour;
+	/*	for (int i=0;i<map.length;i++){
+			for (int j=0;j<map.length;j++){
+				retour += map[i][j];
+			}
+		}
+		return retour;
+	*/
 	}
-
+/*	
 	public boolean save(String nom) {
 		DataOutputStream dos = null;
 		try {
@@ -194,40 +168,6 @@ public class Map {
 			}catch(IOException e) {
 				e.printStackTrace();
 			}
-		}
-
-
 	}
-
-	  //////////////////////////////////
-	 //// fonction de verification ////
-	//////////////////////////////////
-
-	/**
-	*	Verifie si a est une coordonnes dans la carte
-	*/
-	public boolean estValide(int a){
-		return (a>=0 && a<this.taille_map);
-	}
-
-	/**
-	*	Verifie si la case existe
-	*/
-	public boolean estCase(int x, int y){
-		return (estValide(x) && estValide(y));
-	}
-
-	//////////////////////////////////
-   //// ACCESSEUR \ MUTATEURS    ////
-  //////////////////////////////////
-
-  public int getTailleMap(){
-	  return this.taille_map;
-  }
-  public char[][] getMap(){
-	  return this.map;
-  }
-  public void setCase(char s,int i, int j) {
-		this.map[i][j]= s;
-	}
+ */
 }
