@@ -20,31 +20,47 @@ public class Map {
 		String[] deplacement_possible = new String[4];
 
 
-		if(!this.isNotGround(j.getX()-1, j.getY())) {
+		if(!this.isNotGround(j.getX(), j.getY()-1)) {
 			deplacement_possible[compteur] = "OUEST";
 			compteur ++;
 		}
-		if(!this.isNotGround(j.getX()+1, j.getY())) {
+		if(!this.isNotGround(j.getX(), j.getY()+1)) {
 			deplacement_possible[compteur] = "EST";
 			compteur ++;
 		}
-		if(!this.isNotGround(j.getX(), j.getY()-1)) {
+		if(!this.isNotGround(j.getX()-1, j.getY())) {
 			deplacement_possible[compteur] = "NORD";
 			compteur ++;
 		}
-		if(!this.isNotGround(j.getX()-1, j.getY()+1)) {
+		if(!this.isNotGround(j.getX()+1, j.getY())) {
 			deplacement_possible[compteur] = "SUD";
 			compteur ++;
 		}
 		do{
 			System.out.println("Où voulez vous allez ( "+ deplacement_possible.length +" choix possibles):");
 			for(int i = 0; i < compteur; i++){
-				System.out.println(i+": "+deplacement_possible[i]);
+				System.out.println(i+1+": "+deplacement_possible[i]);
 			}
-			System.out.println("==> ");
+			System.out.print("==> ");
 			choix = sc.nextInt();
+			choix --;
 		}while(choix > compteur || choix < 0);
-		System.out.println(deplacement_possible[choix]);
+		switch(deplacement_possible[choix]){
+			case "OUEST":
+				j.deplacement(j.getX(), j.getY()-1);
+				break;
+			case "EST":
+				j.deplacement(j.getX(), j.getY()+1);
+				break;
+			case "NORD":
+				j.deplacement(j.getX()-1, j.getY());
+				break;
+			case "SUD":
+				j.deplacement(j.getX()+1, j.getY());
+				break;
+			default :
+				//erreur a gerer meme si normalement pas de probleme
+		}
 	}
 
 	public Entite last(){
@@ -114,9 +130,9 @@ public class Map {
 		boolean trouve;
 		for(int i=0; i<this.map.length; i++){
 			for(int j=0; j<this.map.length; j++){
-				if (map[i][j])
+				if (map[i][j]){
 					retour+="#";
-				else{
+				}else{
 					trouve = false;
 					for (int e=0;e<entites.size();e++){
 						if (this.entites.get(e).getX()==i && this.entites.get(e).getY()==j){
