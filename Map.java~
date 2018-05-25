@@ -46,6 +46,7 @@ public class Map {
 				choix = sc.nextInt();
 			}catch(Exception e){
 				choix = 0;
+				System.out.println("serieusement?!-_-");
 			}
 		}while(choix < 0 || choix > 5 || choix == 4);
 		int dx=0,dy=0;

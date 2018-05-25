@@ -13,6 +13,6 @@ public class Hero extends Personnage{
   }
 
   public String toString(){
-    return "O";
+    return "@";
   }
 }

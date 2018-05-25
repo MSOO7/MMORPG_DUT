@@ -12,7 +12,7 @@ public class Main {
 		//joueur.deplacement(2, 2);
 		m.add_E(new Item());
 		m.random_placement(m.last());
-		while (true) {
+		while true do{
 		clear();
 		System.out.println(m);
 		m.moveHero();
