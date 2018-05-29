@@ -13,6 +13,69 @@ public class Map {
 
 	}
 
+	public void init(){
+		Hero j = new Hero();
+		j.init();
+		boolean stop = false;
+		add_E(j);
+		random_placement(j);
+		while(!stop){
+			afficher();
+			stop = Action();
+		}
+	}
+
+	public static void clear(){
+		for(int i=0;i<40;i++)
+        System.out.println("\n" );
+	}
+
+	public void afficher(){
+		clear();
+		System.out.println(this);
+	}
+
+	public Entite getJ(){
+		return this.entites.get(0);
+	}
+
+	public boolean Action(){
+		Scanner sc = new Scanner(System.in);
+		int choix = 0;
+		System.out.println("Vous pouvez :");
+		System.out.println("\t1- vous deplacez");
+		System.out.println("\t2- attaquer");
+		System.out.println("\t3- utiliser un objet");
+		System.out.println("\t4- ramasser/jeter un objet");
+		System.out.println("\t5- partir");
+
+
+		do{
+			System.out.print("=>");
+			choix = sc.nextInt();
+		}while(choix < 0 || choix > 5);
+
+		boolean retour = false;
+
+		switch(choix){
+			case 1:
+				moveHero();
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+			case 5:
+				System.out.println("A la prochaine");
+				retour = true;
+				break;
+		}
+		return retour;
+
+	}
+
 	public void moveHero(){
 		Scanner sc = new Scanner(System.in);
 		int choix=0 , compteur = 0;
@@ -36,7 +99,7 @@ public class Map {
 		deplacement_possible[compteur] = "NORTH";
 		compteur ++;
 		}
-	
+
 */
 		do{
 			System.out.println("Où voulez vous allez:");

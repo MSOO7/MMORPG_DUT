@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Personnage extends Entite{
 	private int initiative;
 	private int attaque;
@@ -7,11 +9,10 @@ public class Personnage extends Entite{
 	private int PA;
 	private int PV;
 	private int XP;
-	private int inventaire[];
+	private Item[] equipement;
 
 	public Personnage(){
 		super();
-		int tab[]= {10,10};
 		this.initiative = 10;
 		this.attaque = 10;
 		this.esquive = 10;
@@ -20,10 +21,10 @@ public class Personnage extends Entite{
 		this.PA = 10;
 		this.PV = 10;
 		this.XP = 10;
-		this.inventaire = tab;
+		this.equipement = new Item[6];
 	}
 	public Personnage(int initiative, int attaque, int esquive, int defense,
-			int degats, int pA, int pV, int xP, int[] inventaire) {
+			int degats, int pA, int pV, int xP, Item[] equipement) {
 		super();
 		this.initiative = initiative;
 		this.attaque = attaque;
@@ -33,9 +34,14 @@ public class Personnage extends Entite{
 		this.PA = pA;
 		this.PV = pV;
 		this.XP = xP;
-		this.inventaire = inventaire;
+		this.equipement = equipement;
 	}
 
+	public void init(){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("");
+		sc.close();
+	}
 	// public save(String chemin){
 	//
 	// }
@@ -109,12 +115,12 @@ public class Personnage extends Entite{
 		XP = xP;
 	}
 
-	public int[] getInventaire() {
-		return inventaire;
+	public Item[] getEquipement() {
+		return this.equipement;
 	}
 
-	public void setInventaire(int[] inventaire) {
-		this.inventaire = inventaire;
+	public void setEquipement(Item[] inventaire) {
+		this.equipement = inventaire;
 	}
 
 	public String toString(){
