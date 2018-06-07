@@ -15,8 +15,6 @@ public class Map {
 
 	public void init(){
 		Hero j = new Hero();
-		Entite e;
-		ListIterator<Entite> ite = this.entites.listIterator();
 		add_E(j);
 		j.init();
 		for(int i = 0; i < 20; i++){
@@ -26,11 +24,7 @@ public class Map {
 		random_placement(j);
 		while(!stop){
 			afficher();
-			for(int i = 0; i < this.entites.size(); i++){
-				e = this.entites.get(i);
-				if(e.getClass().getName()== "Item" && this.getJ().getX() == e.getX() && this.getJ().getY() == e.getY())
-					this.entites.remove(e);
-			}
+			ramasser();
 			stop = Action();
 		}
 	}
@@ -47,6 +41,18 @@ public class Map {
 
 	public Entite getJ(){
 		return this.entites.get(0);
+	}
+
+	public void ramasser(){
+		Entite e;
+		for(int i = 0; i < this.entites.size(); i++){
+			e = this.entites.get(i);
+			if(e.getClass().getSuperclass().getName()== "Item" && this.getJ().getX() == e.getX() && this.getJ().getY() == e.getY()){
+				if(((Hero)this.getJ()).addI((Item)e)){
+					this.entites.remove(e);
+				}
+			}
+		}
 	}
 
 	public void move_monstre(){
@@ -89,6 +95,8 @@ public class Map {
 */
 		move_monstre();
 		do{
+			System.out.println(new Exception("error in Hero.java/::\n line 24\n arrayList not allowed::\nchanging library/context allow farrows"));
+			System.exit(0);
 			System.out.println("Que voulez vous faire : ");
 			System.out.println("1: OUEST\n2: SUD\n3: EST\n5: NORD\n\n4: Inventaire\n7:Passer son tour");
 			System.out.print("==> ");
@@ -184,7 +192,20 @@ public class Map {
 	}
 
 	public void generateItem(){
-		Item i = new Item();
+		Random r = new Random();
+		int n = r.nextInt(3);
+		Item i = null;
+		switch(n){
+			case 0:
+				i = new Potion();
+				break;
+			case 1:
+				i = new Arme();
+				break;
+			case 2:
+				i = new Armure();
+				break;
+		}
 		random_placement(i);
 		entites.add(i);
 	}

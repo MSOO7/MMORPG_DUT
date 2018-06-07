@@ -4,6 +4,7 @@ public class Potion extends Item{
 
 	public Potion(){
 		super();
+		super.setNom("Potion");
 		this.degats = 0;
 	}
 	public String toString(){

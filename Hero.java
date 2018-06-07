@@ -12,7 +12,7 @@ public class Hero extends Personnage{
     this.force = 0;
     this.adresse = 0;
     this.resistance = 0;
-    this.inventaire = new Item[10];
+    this.inventaire = new Item[4];
     init();
   }
 
@@ -24,13 +24,23 @@ public class Hero extends Personnage{
     this.inventaire = inventaire;
   }
 
+  public boolean addI(Item ite){
+    for(int i = 0; i < inventaire.length; i++){
+      if(inventaire[i] == null){
+        inventaire[i] = ite;
+        return true;
+      }
+    }
+    return false;
+  }
+
   public void afficherInventaire(){
     Scanner sc = new Scanner(System.in);
     int choix = 1;
     System.out.println("Inventaire:");
     for(Item i: this.inventaire){
       if( i != null)
-        System.out.println("- "+i);
+        System.out.println("- "+i.getNom());
     }
     while(choix != 0){
       System.out.print("0 pour quitter : ");
