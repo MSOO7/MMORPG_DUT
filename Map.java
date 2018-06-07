@@ -1,59 +1,75 @@
 import java.io.*;
 import java.util.*;
 
+/**	Classe Map
+ *
+ * Classe qui gere tout le jeu, elle fonctionne comme un plateau de
+ * jeu de societe autour duquel tout le jeu s'articule
+ *
+ *	Attributs:
+ * 		-boolean map : Tableau boolean , true = Mur false = Sol
+ *    -ArrayList<Entites> entites : liste des joueurs,objets,monstres a placé sur la map
+ **/
+
 
 public class Map {
 	private boolean[][] map ;
 	private ArrayList<Entite> entites;
 
+	/** Constructeur Map
+	 *
+	 *	int taille : taille de la map a creer(Carre)
+	 **/
 	public Map(int taille) {
+		//initialise les attributs
 		this.map = new boolean[taille][taille];
 		this.entites = new ArrayList<Entite>();
+		//genere la map
 		this.generate();
-
 	}
 
+	/**
+	 * initialise une partie et commence une partie
+	 **/
 	public void init(){
-		Hero j = new Hero();
-		add_E(j);
-		j.init();
+		Hero j = new Hero(); //creation d'un joueur
+		add_E(j); //Ajout du joueur a la liste des entites appartenant a la map
+		j.init(); //initialise les attributs du joueur
 		for(int i = 0; i < 20; i++){
-			random_entite();
+			random_entite(); // Choisit et place aleatoirement  des entites
 		}
-		boolean stop = false;
-		random_placement(j);
-		while(!stop){
-			afficher();
-			ramasser();
-			stop = Action();
+		boolean stop = false; //Sert a determiner quand on doit arreter le jeu
+		random_placement(j); //On place aleatoirement le joueur
+		while(!stop){		  // Tant que l'on ne veut pas quitter
+			afficher();		  // Affiche la map
+			ramasser();     // Detecte si on marche sur un objet et le ramasse automatiquement
+			stop = Action(); // Demande a l'utilisateur l'action souhaité
 		}
 	}
 
-	public static void clear(){
-		for(int i=0;i<40;i++)
-        System.out.println("\n" );
-	}
-
-	public void afficher(){
-		clear();
-		System.out.println(this);
-	}
-
-	public Entite getJ(){
-		return this.entites.get(0);
-	}
 
 	public void ramasser(){
 		Entite e;
-		for(int i = 0; i < this.entites.size(); i++){
+		for(int i = 0; i < this.entites.size(); i++){ //parcours la liste des entites de la map
 			e = this.entites.get(i);
-			if(e.getClass().getSuperclass().getName()== "Item" && this.getJ().getX() == e.getX() && this.getJ().getY() == e.getY()){
-				if(((Hero)this.getJ()).addI((Item)e)){
-					this.entites.remove(e);
+			if(e.getClass().getSuperclass().getName()== "Item"
+					&& this.getJ().getX() == e.getX()
+						&& this.getJ().getY() == e.getY()){
+				//si l'entite est un item ET qu'elle est sur la meme case que le joueur
+				if(((Hero)this.getJ()).addI((Item)e)){ //ajoute l'entite a l'inventaire du joueur , renvoie false si il n'y as plus de place
+					this.entites.remove(e); // on supprime l'entite de la map pour ne pas qu'elle soit affiché
 				}
 			}
 		}
 	}
+
+	/** Mouvement des monstres
+	 *
+	 *	
+	 *
+	 *
+	 *
+	 **/
 
 	public void move_monstre(){
 		for(Entite e : this.entites){
@@ -72,33 +88,11 @@ public class Map {
 		Scanner sc = new Scanner(System.in);
 		int choix=0 , compteur = 0;
 		Hero j = (Hero) this.entites.get(0);
-		//String[] deplacement_possible = {;
 
-/*
-		if(!this.isNotGround(j.getX(), j.getY()-1)) {
-			deplacement_possible[compteur] = "OUEST";
-			compteur ++;
-		}
-		if(!this.isNotGround(j.getX()+1, j.getY())) {
-		deplacement_possible[compteur] = "SUD";
-		compteur ++;
-		}
-		if(!this.isNotGround(j.getX(), j.getY()+1)) {
-		deplacement_possible[compteur] = "EST";
-		compteur ++;
-		}
-		if(!this.isNotGround(j.getX()-1, j.getY())) {
-		deplacement_possible[compteur] = "NORTH";
-		compteur ++;
-		}
-
-*/
 		move_monstre();
 		do{
-			System.out.println(new Exception("error in Hero.java/::\n line 24\n arrayList not allowed::\nchanging library/context allow farrows"));
-			System.exit(0);
 			System.out.println("Que voulez vous faire : ");
-			System.out.println("1: OUEST\n2: SUD\n3: EST\n5: NORD\n\n4: Inventaire\n7:Passer son tour");
+			System.out.println("1: OUEST\n2: SUD\n3: EST\n5: NORD\n\n4: Inventaire\n7:Passer son tour\n0:Quitter");
 			System.out.print("==> ");
 			try{
 				choix = sc.nextInt();
@@ -108,6 +102,8 @@ public class Map {
 		}while(choix < 0 || (choix > 5 && choix != 7));
 		int dx=0,dy=0;
 		switch(choix){
+			case 0:
+				return true;
 			case 1:
 				dy--;
 				break;
@@ -127,7 +123,6 @@ public class Map {
 				break;
 			default :
 				//erreur a gerer meme si normalement pas de probleme
-				return true;
 		}
 		if(!this.isNotGround(j.getX()+dx,j.getY()+dy))
 			j.deplacement(j.getX()+dx, j.getY()+dy);
@@ -161,28 +156,8 @@ public class Map {
 			e.initRandom(this.getT());
 		}while(this.isNotGround(e.getX(), e.getY()));
 	}
-	//////////////////////////////////
-   //// fonction de construction ////
-  //////////////////////////////////
 
-	public void generate() {
-		for(int i=0; i < this.map.length; i++){
-			for(int j=0; j < this.map.length; j++){
-				this.map[i][j] = false;
-			}
-		}
-		this.contour();
-	}
 
-	public void contour() {
-		for(int i = 0; i < this.map.length; i++) {
-			this.map[0][i] = true;
-			this.map[i][0] = this.map[i][this.map.length -1] = true; // mur des cotes de la map
-			this.map[this.map.length - 1][i] = true;  // mur bas de la map
-		}
-	}
-
-	//------------------------------------------------------------------------------------
 	public void random_entite(){
 		Random r = new Random();
 		if (r.nextInt(2)==0)
@@ -214,6 +189,43 @@ public class Map {
 		Monstre m = new Monstre();
 		random_placement(m);
 		entites.add(m);
+	}
+
+
+	///////////////////////////////////
+	// Fonction specifique a la map //
+	/////////////////////////////////
+
+	public void generate() {
+		Random r = new Random();
+		for(int i=0; i < this.map.length; i++){
+			for(int j=0; j < this.map.length; j++){
+				this.map[i][j] = r.nextInt(70)<1;
+			}
+		}
+		this.contour();
+	}
+
+	public void contour() {
+		for(int i = 0; i < this.map.length; i++) {
+			this.map[0][i] = true;
+			this.map[i][0] = this.map[i][this.map.length -1] = true; // mur des cotes de la map
+			this.map[this.map.length - 1][i] = true;  // mur bas de la map
+		}
+	}
+
+	public static void clear(){
+		for(int i=0;i<40;i++)
+		System.out.println("\n" );
+	}
+
+	public void afficher(){
+		clear();
+		System.out.println(this);
+	}
+
+	public Entite getJ(){
+		return this.entites.get(0);
 	}
 
 	public String toString(){
