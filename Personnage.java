@@ -18,9 +18,9 @@ public class Personnage extends Entite{
 		this.esquive = 10;
 		this.defense = 10;
 		this.degats = 10;
-		this.PA = 10;
+		this.PA = 5;
 		this.PV = 10;
-		this.XP = 10;
+		this.XP = 0;
 		this.equipement = new Item[6];
 	}
 	public Personnage(int initiative, int attaque, int esquive, int defense,
@@ -47,8 +47,8 @@ public class Personnage extends Entite{
 	// }
 
 	public void deplacement(int x, int y){
-		this.setX(x);
-		this.setY(y);
+			this.setX(x);
+			this.setY(y);
 	}
 
 	public int getInitiative() {

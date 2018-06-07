@@ -15,12 +15,22 @@ public class Map {
 
 	public void init(){
 		Hero j = new Hero();
-		j.init();
-		boolean stop = false;
+		Entite e;
+		ListIterator<Entite> ite = this.entites.listIterator();
 		add_E(j);
+		j.init();
+		for(int i = 0; i < 20; i++){
+			random_entite();
+		}
+		boolean stop = false;
 		random_placement(j);
 		while(!stop){
 			afficher();
+			for(int i = 0; i < this.entites.size(); i++){
+				e = this.entites.get(i);
+				if(e.getClass().getName()== "Item" && this.getJ().getX() == e.getX() && this.getJ().getY() == e.getY())
+					this.entites.remove(e);
+			}
 			stop = Action();
 		}
 	}
@@ -39,44 +49,20 @@ public class Map {
 		return this.entites.get(0);
 	}
 
-	public boolean Action(){
-		Scanner sc = new Scanner(System.in);
-		int choix = 0;
-		System.out.println("Vous pouvez :");
-		System.out.println("\t1- vous deplacez");
-		System.out.println("\t2- attaquer");
-		System.out.println("\t3- utiliser un objet");
-		System.out.println("\t4- ramasser/jeter un objet");
-		System.out.println("\t5- partir");
-
-
-		do{
-			System.out.print("=>");
-			choix = sc.nextInt();
-		}while(choix < 0 || choix > 5);
-
-		boolean retour = false;
-
-		switch(choix){
-			case 1:
-				moveHero();
-				break;
-			case 2:
-				break;
-			case 3:
-				break;
-			case 4:
-				break;
-			case 5:
-				System.out.println("A la prochaine");
-				retour = true;
-				break;
+	public void move_monstre(){
+		for(Entite e : this.entites){
+			if(e.getClass().getName() == "Monstre"){
+				Monstre m = (Monstre)e;
+				m.deplacer((Hero)this.getJ());
+				while(this.isNotGround(m.getX(), m.getY())){
+					m.goBack();
+					m.deplacer((Hero)this.getJ());
+				};
+			}
 		}
-		return retour;
-
 	}
 
-	public void moveHero(){
+	public boolean Action(){
 		Scanner sc = new Scanner(System.in);
 		int choix=0 , compteur = 0;
 		Hero j = (Hero) this.entites.get(0);
@@ -101,16 +87,17 @@ public class Map {
 		}
 
 */
+		move_monstre();
 		do{
-			System.out.println("Où voulez vous allez:");
-			System.out.println("1: OUEST\n2: SUD\n3: EST\n5: NORD");
+			System.out.println("Que voulez vous faire : ");
+			System.out.println("1: OUEST\n2: SUD\n3: EST\n5: NORD\n\n4: Inventaire\n7:Passer son tour");
 			System.out.print("==> ");
 			try{
 				choix = sc.nextInt();
 			}catch(Exception e){
 				choix = 0;
 			}
-		}while(choix < 0 || choix > 5 || choix == 4);
+		}while(choix < 0 || (choix > 5 && choix != 7));
 		int dx=0,dy=0;
 		switch(choix){
 			case 1:
@@ -125,12 +112,18 @@ public class Map {
 			case 2:
 				dx++;
 				break;
+			case 4:
+				j.afficherInventaire();
+				break;
+			case 7:
+				break;
 			default :
 				//erreur a gerer meme si normalement pas de probleme
+				return true;
 		}
 		if(!this.isNotGround(j.getX()+dx,j.getY()+dy))
 			j.deplacement(j.getX()+dx, j.getY()+dy);
-
+		return false;
 	}
 
 	public Entite last(){
@@ -145,17 +138,20 @@ public class Map {
 	public void add_E(Entite e){
 		this.entites.add(e);
 	}
+	public Entite getE(int x, int y){ // Recuperer une entite en fct de ses coordonnes
+		Entite e = null;
+		for(int i = 0; i < this.entites.size(); i++){
+			e = this.entites.get(i);
+			if(e.getX() == x && e.getY() == y) return e;
+		}
+		return e;
+		//throw new EntiteInexistante();
+	}
 
-	public void random_placement(Entite entite){
-		int x,y;
-		Random r = new Random();
-
+	public void random_placement(Entite e){
 		do{
-			x = r.nextInt(this.getT());
-			y = r.nextInt(this.getT());
-		}while(this.isNotGround(x, y));
-		entite.setX(x);
-		entite.setY(y);
+			e.initRandom(this.getT());
+		}while(this.isNotGround(e.getX(), e.getY()));
 	}
 	//////////////////////////////////
    //// fonction de construction ////
@@ -181,18 +177,22 @@ public class Map {
 	//------------------------------------------------------------------------------------
 	public void random_entite(){
 		Random r = new Random();
-		if (r.nextInt(1)==0)
+		if (r.nextInt(2)==0)
 			this.generateItem();
 		else
 			this.generateMonstre();
 	}
 
 	public void generateItem(){
-
+		Item i = new Item();
+		random_placement(i);
+		entites.add(i);
 	}
 
 	public void generateMonstre(){
-
+		Monstre m = new Monstre();
+		random_placement(m);
+		entites.add(m);
 	}
 
 	public String toString(){

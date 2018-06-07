@@ -6,6 +6,7 @@ public class Main {
 	public static void main(String[] args) {
 		Map m = new Map(30);
 		m.init();
+		//Fen f = new Fen(m);
 		// Hero joueur = new Hero();
 		// m.add_E(joueur);
 		// m.random_placement(m.last());
@@ -21,7 +22,7 @@ public class Main {
 		//System.out.println(m);
 	}
 
-	
+
 
 
 }

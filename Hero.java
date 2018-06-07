@@ -24,6 +24,20 @@ public class Hero extends Personnage{
     this.inventaire = inventaire;
   }
 
+  public void afficherInventaire(){
+    Scanner sc = new Scanner(System.in);
+    int choix = 1;
+    System.out.println("Inventaire:");
+    for(Item i: this.inventaire){
+      if( i != null)
+        System.out.println("- "+i);
+    }
+    while(choix != 0){
+      System.out.print("0 pour quitter : ");
+      choix = sc.nextInt();
+    }
+  }
+
   public void init(){
     // super.init();
     // Scanner sc = new Scanner(System.in);
