@@ -5,6 +5,7 @@ public class Hero extends Personnage{
   private int adresse;
   private int resistance;
   private Item[] inventaire;
+  private int curseur=0;
   public static int DEFAULT_NB_DEGRES = 18;
 
   public Hero(){
@@ -24,6 +25,10 @@ public class Hero extends Personnage{
     this.inventaire = inventaire;
   }
 
+  public String getEtat(){
+    return "Vous etes "+Personnage.etat[(super.getPV()/2)-1]+"\n";
+  }
+
   public boolean addI(Item ite){
     for(int i = 0; i < inventaire.length; i++){
       if(inventaire[i] == null){
@@ -35,17 +40,46 @@ public class Hero extends Personnage{
   }
 
   public void afficherInventaire(){
+    System.out.println("Inventaire:");
+    for(int i = 0; i < this.inventaire.length; i++){
+     if( this.inventaire[i] != null)
+        if (curseur== i){
+            System.out.println(" > "+this.inventaire[i].getNom());
+        }else{
+          System.out.println(" - "+this.inventaire[i].getNom());
+        }
+      }
+  }
+
+  public void choixInventaire(Map m){
+    this.curseur = 0;
     Scanner sc = new Scanner(System.in);
     int choix = 1;
-    System.out.println("Inventaire:");
-    for(Item i: this.inventaire){
-      if( i != null)
-        System.out.println("- "+i.getNom());
-    }
-    while(choix != 0){
-      System.out.print("0 pour quitter : ");
+    while(choix != 4){
+      afficherInventaire();
+      System.out.print("5: HAUT\n2: BAS\n0: Jeter l'objet\n4 pour quitter : ");
       choix = sc.nextInt();
+      if (choix == 5 && curseur > 0)this.curseur--;
+      if (choix == 2 && curseur < this.inventaire.length-1 && this.inventaire[curseur+1] != null)this.curseur++;
+      if (choix == 0 && this.inventaire[this.curseur] != null) jeterI(m);
     }
+  }
+
+  public void jeterI(Map m){
+    m.add_E(this.inventaire[this.curseur],this.getX(),this.getY());
+    removeI(this.curseur);
+  }
+
+  public void removeI(int i){
+    Item[] inv_tmp = new Item[this.inventaire.length];
+    this.inventaire[this.curseur] = null;
+    for(int k = 0; k < this.inventaire.length; k++ ){
+      if(this.inventaire[k] != null){
+        inv_tmp[k] = this.inventaire[k];
+      }
+    }
+    this.inventaire = inv_tmp;
+
   }
 
   public void init(){
@@ -109,6 +143,7 @@ public class Hero extends Personnage{
   public int getForce(){return this.force;}
   public int getAdresse(){return this.adresse;}
   public int getResistance(){return this.resistance;}
+  public Item[] getInventaire(){return this.inventaire;}
 
   public void setForce(int force){this.force = force;}
   public void setAdresse(int adresse){this.adresse = adresse;}

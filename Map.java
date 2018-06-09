@@ -16,6 +16,7 @@ public class Map {
 	private boolean[][] map ;
 	private ArrayList<Entite> entites;
 
+
 	/** Constructeur Map
 	 *
 	 *	int taille : taille de la map a creer(Carre)
@@ -33,6 +34,7 @@ public class Map {
 	 **/
 	public void init(){
 		Hero j = new Hero(); //creation d'un joueur
+		j.setNom("Aventurier");
 		add_E(j); //Ajout du joueur a la liste des entites appartenant a la map
 		j.init(); //initialise les attributs du joueur
 		for(int i = 0; i < 20; i++){
@@ -40,11 +42,10 @@ public class Map {
 		}
 		boolean stop = false; //Sert a determiner quand on doit arreter le jeu
 		random_placement(j); //On place aleatoirement le joueur
-		while(!stop){		  // Tant que l'on ne veut pas quitter
-			afficher();		  // Affiche la map
-			ramasser();     // Detecte si on marche sur un objet et le ramasse automatiquement
-			stop = Action(); // Demande a l'utilisateur l'action souhaité
-		}
+		// while(!stop){		  // Tant que l'on ne veut pas quitter
+		// 	afficher();		  // Affiche la map
+		// 	stop = Action(); // Demande a l'utilisateur l'action souhaité
+		// }
 	}
 
 
@@ -65,7 +66,7 @@ public class Map {
 
 	/** Mouvement des monstres
 	 *
-	 *	
+	 *
 	 *
 	 *
 	 *
@@ -117,7 +118,7 @@ public class Map {
 				dx++;
 				break;
 			case 4:
-				j.afficherInventaire();
+				j.choixInventaire(this);
 				break;
 			case 7:
 				break;
@@ -126,6 +127,8 @@ public class Map {
 		}
 		if(!this.isNotGround(j.getX()+dx,j.getY()+dy))
 			j.deplacement(j.getX()+dx, j.getY()+dy);
+		ramasser();     // Detecte si on marche sur un objet et le ramasse automatiquement
+
 		return false;
 	}
 
@@ -140,6 +143,14 @@ public class Map {
 	}
 	public void add_E(Entite e){
 		this.entites.add(e);
+	}
+	public void add_E(Entite e, int x, int y){
+		this.entites.add(e);
+		e.setX(x);
+		e.setY(y);
+
+		// System.out.println( this.entites.indexOf(e));
+		// System.out.println(x+","+y+" : "+e.getX()+","+e.getY());
 	}
 	public Entite getE(int x, int y){ // Recuperer une entite en fct de ses coordonnes
 		Entite e = null;
@@ -224,9 +235,10 @@ public class Map {
 		System.out.println(this);
 	}
 
-	public Entite getJ(){
-		return this.entites.get(0);
+	public Hero getJ(){
+		return (Hero)this.entites.get(0);
 	}
+
 
 	public String toString(){
 		String retour="";

@@ -6,9 +6,11 @@ public class Entite {
 	private int y;
 	private String nom;
 
+
 	public Entite(){
 		this.x=1;
 		this.y=1;
+		this.nom = "";
 	}
 
 	public Entite(int x, int y, String nom) {
@@ -46,6 +48,7 @@ public class Entite {
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
+
 
 	public String toString(){
 		return "E";

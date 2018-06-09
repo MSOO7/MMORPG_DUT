@@ -1,6 +1,7 @@
 import java.util.Random;
 
 public class Monstre extends Personnage{
+
   private int last_x;
   private int last_y;
   private int champ_vision = 3;

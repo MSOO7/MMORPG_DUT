@@ -11,6 +11,8 @@ public class Personnage extends Entite{
 	private int XP;
 	private Item[] equipement;
 
+	public static final String[] etat = {"En forme", "legerement blessé", "Gravement blessé", "Inconscient", "Mort"};
+
 	public Personnage(){
 		super();
 		this.initiative = 10;
