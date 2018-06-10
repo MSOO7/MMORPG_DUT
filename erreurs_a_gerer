@@ -1,1 +1,9 @@
 le cas ou on donne autre chose qu'un int pendant une saisie
+
+le cas ou les deplacements sont bloqué d'un coup pendant la partie, le programme
+ detecte des monstres sur notres chemin alors qu'il n'y en a pas.
+
+ raison: Peut etre du au fait que les monstres peuvent spawn sur nous
+
+ solution: faire spawn le joueur a un endroit precis
+ ou faire les spawn les monstres sur des cases vides<<<<

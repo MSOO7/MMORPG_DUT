@@ -137,10 +137,16 @@ public class Fen extends JFrame{
       if(src == KeyEvent.VK_DOWN) dx++;
 
       if(!m.isNotGround(dx, dy)){
-        if(!(m.getE(dx,dy).toString().equals("M"))) m.getJ().deplacement(dx,dy);
+        if(!(m.getE(dx,dy).toString().equals("M"))){
+          System.out.println("MOUI?");
+          m.getJ().deplacement(dx,dy);
+        }else{
+          // System.out.println("NANI?!"); PROBLEME A REGLER ICI
+        }
       }
       afficher_map();
       m.ramasser();
+      // m.move_monstre();
       repaint();
     }
   }

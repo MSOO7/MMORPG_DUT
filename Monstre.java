@@ -4,15 +4,17 @@ public class Monstre extends Personnage{
 
   private int last_x;
   private int last_y;
-  private int champ_vision = 3;
+  private final int champ_vision = 3;
 
   public Monstre(){
     super();
   }
 
-  public void deplacer(Hero h){
+  public void deplacer(Map m){
     Random r = new Random();
     int dx = this.getX(), dy = this.getY();
+
+    Hero h = m.getJ();
 
     this.last_x = dx;
     this.last_y = dy;
@@ -55,7 +57,7 @@ public class Monstre extends Personnage{
   				break;
       }
     }
-    if(!(h.getX() == dx && h.getY() == dy)) super.deplacement(dx,dy);
+    if(!(h.getX() == dx && h.getY() == dy) && m.getNbE(dx, dy) == 0 ) super.deplacement(dx,dy);
   }
 
   public void goBack(){

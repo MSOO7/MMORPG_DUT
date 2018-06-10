@@ -76,13 +76,25 @@ public class Map {
 		for(Entite e : this.entites){
 			if(e.getClass().getName() == "Monstre"){
 				Monstre m = (Monstre)e;
-				m.deplacer((Hero)this.getJ());
-				while(this.isNotGround(m.getX(), m.getY())){
+				m.deplacer(this);
+				while(this.isNotGround(m.getX(), m.getY()) || this.getNbE(m.getX(),m.getY()) > 1){
 					m.goBack();
-					m.deplacer((Hero)this.getJ());
-				};
+					m.deplacer(this);
+				}
 			}
 		}
+	}
+
+	/**
+	 * Compte le nombre d'entité situé sur une case precise
+	 **/
+	public int getNbE(int x, int y){
+		int i = 0;
+		for(Entite e: this.entites){
+			if(e.getX() == x && e.getY() == y) i++;
+		}
+
+		return i;
 	}
 
 	public boolean Action(){
@@ -139,6 +151,7 @@ public class Map {
 		return this.map.length;
 	}
 	public boolean isNotGround(int x, int y){
+		// System.out.println("MOUI? : "+ this.map[x][y]);
 		return this.map[x][y];
 	}
 	public void add_E(Entite e){
