@@ -49,8 +49,8 @@ public class Personnage extends Entite{
 	// }
 
 	public void deplacement(int x, int y){
-			this.setX(x);
-			this.setY(y);
+			super.setX(x);
+			super.setY(y);
 	}
 
 	public int getInitiative() {

@@ -36,8 +36,8 @@ public class Fen extends JFrame{
     inventaire();
     afficher_map();
     this.setFocusable(true);
-    requestFocus();
     this.addKeyListener(e);
+
   }
 
   public void carte(){
@@ -126,6 +126,7 @@ public class Fen extends JFrame{
 
     public void keyReleased(KeyEvent e){}
     public void keyPressed(KeyEvent e){
+
       int src = e.getKeyCode();
       int dx = m.getJ().getX(), dy = m.getJ().getY();
 
@@ -135,23 +136,28 @@ public class Fen extends JFrame{
       if(src == KeyEvent.VK_RIGHT) dy++;
       if(src == KeyEvent.VK_UP) dx--;
       if(src == KeyEvent.VK_DOWN) dx++;
+      if(src == KeyEvent.VK_SPACE) m.attaquer();
 
       if(!m.isNotGround(dx, dy)){
-        if(!(m.getE(dx,dy).toString().equals("M"))){
-          System.out.println("MOUI?");
+        if(!(m.getNbE(dx,dy) > 0)){
           m.getJ().deplacement(dx,dy);
         }else{
-          // System.out.println("NANI?!"); PROBLEME A REGLER ICI
+          if(m.getE(dx,dy).toString().equals("W") ||
+              m.getE(dx,dy).toString().equals("A") ||
+                m.getE(dx,dy).toString().equals("P")) m.getJ().deplacement(dx,dy);
         }
       }
-      afficher_map();
       m.ramasser();
-      // m.move_monstre();
+      m.verifLevel();
+      m.move_monstre();
+      afficher_map();
       repaint();
+      requestFocus();
     }
   }
 
   public static void main(String[] args){
+
     Map m = new Map(32);
     m.init();
     Fen f = new Fen(m);

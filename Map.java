@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.awt.Point;
 
 /**	Classe Map
  *
@@ -15,6 +16,7 @@ import java.util.*;
 public class Map {
 	private boolean[][] map ;
 	private ArrayList<Entite> entites;
+	private int level = 1;
 
 
 	/** Constructeur Map
@@ -41,7 +43,6 @@ public class Map {
 			random_entite(); // Choisit et place aleatoirement  des entites
 		}
 		boolean stop = false; //Sert a determiner quand on doit arreter le jeu
-		random_placement(j); //On place aleatoirement le joueur
 		// while(!stop){		  // Tant que l'on ne veut pas quitter
 		// 	afficher();		  // Affiche la map
 		// 	stop = Action(); // Demande a l'utilisateur l'action souhaité
@@ -64,6 +65,8 @@ public class Map {
 		}
 	}
 
+
+
 	/** Mouvement des monstres
 	 *
 	 *
@@ -71,15 +74,52 @@ public class Map {
 	 *
 	 *
 	 **/
+	 public void attaquer(){
+		 Monstre mon = new Monstre();
+		 mon.setPV(100);
+
+		 for(Monstre[] e: monstre_autour(this.getJ().getX(), this.getJ().getY())){
+			 for(Monstre m: e){
+				if(m != null){
+				 if(m.getPV() < mon.getPV()){
+					 mon = m;
+				 }
+			 	}
+			 }
+		 }
+
+		 mon.setPV(mon.getPV()-10);
+		 if(mon.getPV() < 1) this.entites.remove(mon);
+	 }
+
+	public Monstre[][] monstre_autour(int x, int y){
+		Monstre[][] tab = new Monstre[3][3];
+
+		for (int i = x-1;i <= x+1; i++){
+			for (int j = y-1; j <= y+1; j++){
+				if(this.getE(i,j) != null){
+					if(this.getE(i,j).toString() == "M" ) tab[i-(x-1)][j-(y-1)] = (Monstre)this.getE(i,j);
+				}else{
+					tab[i-(x-1)][j-(y-1)] = null;
+				}
+			}
+		}
+
+		return tab;
+	}
 
 	public void move_monstre(){
+		int lim = 0;
 		for(Entite e : this.entites){
 			if(e.getClass().getName() == "Monstre"){
 				Monstre m = (Monstre)e;
 				m.deplacer(this);
 				while(this.isNotGround(m.getX(), m.getY()) || this.getNbE(m.getX(),m.getY()) > 1){
+					lim ++;
 					m.goBack();
+					if(lim > 100) break;
 					m.deplacer(this);
+
 				}
 			}
 		}
@@ -112,7 +152,7 @@ public class Map {
 			}catch(Exception e){
 				choix = 0;
 			}
-		}while(choix < 0 || (choix > 5 && choix != 7));
+		}while(choix < 0 || (choix > 6));
 		int dx=0,dy=0;
 		switch(choix){
 			case 0:
@@ -132,6 +172,9 @@ public class Map {
 			case 4:
 				j.choixInventaire(this);
 				break;
+			case 6:
+				attaquer();
+				break;
 			case 7:
 				break;
 			default :
@@ -143,6 +186,91 @@ public class Map {
 
 		return false;
 	}
+
+	public void generateRandom(){
+		Random r = new Random();
+		r.setSeed(this.level+28);
+		Point curs = new Point(0, 0);
+		int bloc ;
+		for(int i = 0; i < 40; i++){
+			bloc = r.nextInt(8)+2;
+			curs.move(r.nextInt(getT()-1)+1, r.nextInt(getT()-1)+1);
+			for(int j = 0; j < bloc; j++){
+				if(r.nextBoolean()){
+					curs.translate(r.nextInt(3)-1, 0);
+				}else{
+					curs.translate(0, r.nextInt(3)-1);
+				}
+				if((int)curs.getX() >= 0 && (int)curs.getY() >= 0 && (int)curs.getX() < getT() && (int)curs.getY() < getT()){
+					this.map[(int)curs.getX()][(int)curs.getY()] = true;
+				}
+			}
+		}
+
+		this.map[1][1] = false;
+		this.map[getT()-2][getT()-2] = false;
+
+	}
+
+
+	public void nextLevel(){
+		this.level ++;
+	}
+
+	public int getLevel(){
+		return this.level;
+	}
+
+	public void setLevel(int l){
+		this.level = l;
+	}
+
+	public void verifLevel(){
+		if(this.getJ().getX() == getT()-2 && this.getJ().getY() == getT()-2){
+			System.out.println("MMOOUIII?");
+			this.nextLevel();
+			this.generate();
+			Entite e = this.getJ();
+			this.entites.removeAll(this.entites);
+			this.add_E(e);
+			e.setX(1);
+			e.setY(1);
+			for(int i = 0; i < 20; i++){
+				random_entite(); // Choisit et place aleatoirement  des entites
+			}
+		}
+	}
+
+	// public boolean cheminExiste(){
+	// 	int[][] m = new Int[getT()][getT()];
+	// 	int somme = 0, l,c;
+	//
+	// 	for(int i = 0; i < getT(); i++){
+	// 		for(int j = 0; j < getT(); j++){
+	// 			if(this.map[i][j]){
+	// 				m[i][j] = 1;
+	// 			}else{
+	// 				m[i][j] = 0;
+	// 			}
+	// 		}
+	// 	}
+	//
+	// 	l = 0;
+	// 	for(int i = 0; i < getT(); i++){
+	// 		c = 0;
+	// 		for(int j = 0; j < getT(); j++){
+	// 			somme = 0;
+	// 			for(int k = 0; k < getT(); k++){
+	// 				somme += m[i][k] * m[k][j]
+	// 			}
+	// 			c++;
+	// 			m[l][c] = somme;
+	// 		}
+	// 		j++;
+	// 	}
+	//
+	// 	if(this.m[)
+	// }
 
 	public Entite last(){
 		return this.entites.get(this.entites.size()-1);
@@ -170,21 +298,30 @@ public class Map {
 		for(int i = 0; i < this.entites.size(); i++){
 			e = this.entites.get(i);
 			if(e.getX() == x && e.getY() == y) return e;
+			e = null;
 		}
 		return e;
 		//throw new EntiteInexistante();
 	}
 
 	public void random_placement(Entite e){
+		int x,y;
+		Random r = new Random();
+
+
 		do{
-			e.initRandom(this.getT());
-		}while(this.isNotGround(e.getX(), e.getY()));
+			x = r.nextInt(getT());
+			y = r.nextInt(getT());
+		}while(this.getE(x,y) != null || this.isNotGround(x, y));
+
+		e.setX(x);
+		e.setY(y);
 	}
 
 
 	public void random_entite(){
 		Random r = new Random();
-		if (r.nextInt(2)==0)
+		if (r.nextBoolean())
 			this.generateItem();
 		else
 			this.generateMonstre();
@@ -221,12 +358,13 @@ public class Map {
 	/////////////////////////////////
 
 	public void generate() {
-		Random r = new Random();
-		for(int i=0; i < this.map.length; i++){
-			for(int j=0; j < this.map.length; j++){
-				this.map[i][j] = r.nextInt(70)<1;
-			}
-		}
+		// Random r = new Random();
+		// for(int i=0; i < this.map.length; i++){
+		// 	for(int j=0; j < this.map.length; j++){
+		// 		this.map[i][j] = r.nextInt(70)<1;
+		// 	}
+		// }
+		this.generateRandom();
 		this.contour();
 	}
 
