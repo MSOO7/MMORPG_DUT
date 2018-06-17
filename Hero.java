@@ -26,7 +26,7 @@ public class Hero extends Personnage{
   }
 
   public String getEtat(){
-    return "Vous etes "+Personnage.etat[(super.getPV()/2)-1]+"\n";
+    return "Vous etes "+Personnage.etat[((super.getPV()/10)/2)-1]+"\n";
   }
 
   public boolean addI(Item ite){

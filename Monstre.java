@@ -62,6 +62,7 @@ public class Monstre extends Personnage{
 
   public void goBack(){
     super.deplacement(this.last_x, this.last_y);
+    super.setPA(super.getPA()+1);
   }
 
   public String toString(){

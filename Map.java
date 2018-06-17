@@ -65,18 +65,9 @@ public class Map {
 		}
 	}
 
-
-
-	/** Mouvement des monstres
-	 *
-	 *
-	 *
-	 *
-	 *
-	 **/
-	 public void attaquer(){
+	 public String attaquer(){
 		 Monstre mon = new Monstre();
-		 mon.setPV(100);
+		 mon.setPV(1000);
 
 		 for(Monstre[] e: monstre_autour(this.getJ().getX(), this.getJ().getY())){
 			 for(Monstre m: e){
@@ -88,8 +79,16 @@ public class Map {
 			 }
 		 }
 
-		 mon.setPV(mon.getPV()-10);
+		 int degats = getJ().attaque();
+
+
+		 mon.setPV(mon.getPV()-degats);
 		 if(mon.getPV() < 1) this.entites.remove(mon);
+		 if(mon.getPV() + degats != 1000){
+			 return "Degats infligés : "+degats+"\n PV restants : "+mon.getPV()+"\n";
+		 }else{
+			 return "";
+		 }
 	 }
 
 	public Monstre[][] monstre_autour(int x, int y){
@@ -108,11 +107,13 @@ public class Map {
 		return tab;
 	}
 
-	public void move_monstre(){
+	public boolean move_monstre(){
 		int lim = 0;
+		boolean restePA = false;
 		for(Entite e : this.entites){
 			if(e.getClass().getName() == "Monstre"){
 				Monstre m = (Monstre)e;
+				if(m.getPA() > 0) restePA = true;
 				m.deplacer(this);
 				while(this.isNotGround(m.getX(), m.getY()) || this.getNbE(m.getX(),m.getY()) > 1){
 					lim ++;
@@ -121,6 +122,16 @@ public class Map {
 					m.deplacer(this);
 
 				}
+			}
+		}
+		System.out.println(restePA);
+		return restePA;
+	}
+
+	public void reinitPA(){
+		for(Entite e: this.entites){
+			if(e.getClass().getName().equals("Hero") || e.getClass().getName().equals("Monstre")){
+				((Personnage)e).setPA(5);
 			}
 		}
 	}
@@ -280,7 +291,8 @@ public class Map {
 	}
 	public boolean isNotGround(int x, int y){
 		// System.out.println("MOUI? : "+ this.map[x][y]);
-		return this.map[x][y];
+		if(x < getT() && x > 0 && y < getT() && y > 0) return this.map[x][y];
+		return true;
 	}
 	public void add_E(Entite e){
 		this.entites.add(e);

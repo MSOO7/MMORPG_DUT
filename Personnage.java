@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Random;
 
 public class Personnage extends Entite{
 	private int initiative;
@@ -11,7 +12,7 @@ public class Personnage extends Entite{
 	private int XP;
 	private Item[] equipement;
 
-	public static final String[] etat = {"En forme", "legerement blessé", "Gravement blessé", "Inconscient", "Mort"};
+	public static final String[] etat = {"Mort", "Inconscient", "Gravement blessé", "legerement blessé", "En forme"};
 
 	public Personnage(){
 		super();
@@ -21,7 +22,7 @@ public class Personnage extends Entite{
 		this.defense = 10;
 		this.degats = 10;
 		this.PA = 5;
-		this.PV = 10;
+		this.PV = 100;
 		this.XP = 0;
 		this.equipement = new Item[6];
 	}
@@ -48,9 +49,35 @@ public class Personnage extends Entite{
 	//
 	// }
 
+	public int attaque(){
+		Random r = new Random();
+		int nbD = this.attaque, degats = 0;
+
+		for(Item i: this.equipement){
+			if(i != null){
+				if(i.toString().equals("W")){
+					nbD += ((Arme)i).getImpact();
+				}
+			}
+		}
+
+		degats += nbD%3;
+		nbD = (nbD/3);
+
+		for(int i = 0; i < nbD; i++){
+			degats += r.nextInt(6)+1;
+		}
+
+		return degats;
+
+	}
+
 	public void deplacement(int x, int y){
+		if(this.PA > 0){
 			super.setX(x);
 			super.setY(y);
+			this.PA--;
+		}
 	}
 
 	public int getInitiative() {

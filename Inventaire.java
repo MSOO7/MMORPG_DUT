@@ -7,7 +7,7 @@ public class Inventaire extends JTabbedPane{
   private JPanel[] onglet;
 
   public Inventaire(Item[] inventaire){
-    super(JTabbedPane.LEFT);
+    super(JTabbedPane.RIGHT);
     this.inv = inventaire;
     this.onglet = new JPanel[this.inv.length];
   }

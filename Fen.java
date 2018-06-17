@@ -6,9 +6,11 @@ import java.awt.event.*;
 public class Fen extends JFrame{
   private JPanel est;
 
-  private JTextPane info;
+  private JTextArea info;
   private PanCentre carte;
   private Inventaire inventaire;
+
+  private JButton passer;
 
   private Map m;
 
@@ -34,6 +36,7 @@ public class Fen extends JFrame{
     info();
     carte();
     inventaire();
+    bouton();
     afficher_map();
     this.setFocusable(true);
     this.addKeyListener(e);
@@ -48,7 +51,8 @@ public class Fen extends JFrame{
   }
 
   public void info(){
-    this.info = new JTextPane();
+    this.info = new JTextArea();
+    this.info.setPreferredSize(new Dimension(500,50));
     this.est.add(this.info, BorderLayout.CENTER);
   }
 
@@ -56,6 +60,13 @@ public class Fen extends JFrame{
     this.inventaire = new Inventaire(m.getJ().getInventaire());
 
     this.est.add(this.inventaire, BorderLayout.EAST);
+  }
+
+  public void bouton(){
+    this.passer = new JButton("Passer le tour");
+
+    this.est.add(this.passer,BorderLayout.NORTH);
+    this.passer.addActionListener(this.e);
   }
 
   public void afficher_map(){
@@ -84,16 +95,17 @@ public class Fen extends JFrame{
     }
     carte.setCarte(this.carte_img);
     this.inventaire.actualise();
-    actualise_info();
     // repaint();
   }
 
-  public void actualise_info(){
+  public void actualise_info(String info){
     String old = this.info.getText();
 
     String etat = m.getJ().getEtat();
 
-    this.info.setText("Bienvenue dans le donjon:\n\t-"+m.getJ().getNom());
+    String nouv = "Etat : \n - "+etat+"\n";
+    nouv += info;
+    this.info.setText(nouv);
   }
 
   public void addImg(String s){
@@ -119,7 +131,7 @@ public class Fen extends JFrame{
     if(s.equals("O")) addImg(Sprite.player);
   }
 
-  public class Evenement implements KeyListener{
+  public class Evenement implements ActionListener,KeyListener{
     public Evenement(){}
 
     public void keyTyped(KeyEvent e){}
@@ -130,29 +142,67 @@ public class Fen extends JFrame{
       int src = e.getKeyCode();
       int dx = m.getJ().getX(), dy = m.getJ().getY();
 
+      String info = "";
+
       System.out.println(src);
 
       if(src == KeyEvent.VK_LEFT) dy--;
       if(src == KeyEvent.VK_RIGHT) dy++;
       if(src == KeyEvent.VK_UP) dx--;
       if(src == KeyEvent.VK_DOWN) dx++;
-      if(src == KeyEvent.VK_SPACE) m.attaquer();
+      if(src == KeyEvent.VK_SPACE) info += m.attaquer();
 
-      if(!m.isNotGround(dx, dy)){
-        if(!(m.getNbE(dx,dy) > 0)){
-          m.getJ().deplacement(dx,dy);
-        }else{
-          if(m.getE(dx,dy).toString().equals("W") ||
-              m.getE(dx,dy).toString().equals("A") ||
-                m.getE(dx,dy).toString().equals("P")) m.getJ().deplacement(dx,dy);
+      if(m.getJ().getPA() > 0){
+        if(!m.isNotGround(dx, dy)){
+          if(!(m.getNbE(dx,dy) > 0)){
+            m.getJ().deplacement(dx,dy);
+          }else{
+            if(m.getE(dx,dy).toString().equals("W") ||
+                m.getE(dx,dy).toString().equals("A") ||
+                  m.getE(dx,dy).toString().equals("P")) m.getJ().deplacement(dx,dy);
+          }
         }
       }
       m.ramasser();
+      actualise_info(info);
       m.verifLevel();
-      m.move_monstre();
+      // m.move_monstre();
       afficher_map();
       repaint();
       requestFocus();
+    }
+
+    public void actionPerformed(ActionEvent e){
+      Object src = e.getSource();
+      int lim = 0;
+
+      if(src == passer){
+        JProgressBar p = new JProgressBar(0, 1000);
+        p.setStringPainted(true);
+
+        JFrame j = new JFrame("Patienter");
+        j.setDefaultCloseOperation(j.HIDE_ON_CLOSE);
+        j.setSize(new Dimension(300, 100));
+        j.setLocationRelativeTo(null);
+        j.setVisible(true);
+
+        j.add(new JLabel("Veuillez patientez..."),BorderLayout.NORTH);
+        j.add(p,BorderLayout.CENTER);
+
+        while(m.move_monstre()){
+          p.setValue(lim);
+          afficher_map();
+          repaint();
+          lim++;
+          if(lim > 1000) break;
+        }
+
+        p.setValue(1000);
+        j.dispose();
+
+        m.reinitPA();
+        requestFocus();
+      }
     }
   }
 
